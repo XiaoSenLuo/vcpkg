@@ -12,4 +12,6 @@ if(NOT DEFINED ENV{VCPKG_ROOT})
     message(FATAL_ERROR "not defined environment variable: VCPKG_ROOT")
 endif()
 
-set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/overlay-triplets/toolchains/amd-linux.cmake)
+if (NOT DEFINED VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
+    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/overlay-triplets/toolchains/amd-linux.cmake)
+endif()
