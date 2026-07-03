@@ -13,5 +13,5 @@ if(NOT DEFINED ENV{VCPKG_ROOT})
 endif()
 
 if (NOT DEFINED VCPKG_CHAINLOAD_TOOLCHAIN_FILE)
-    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/overlay-triplets/toolchains/amd-linux.cmake)
+    set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/toolchains/amd-linux.cmake)
 endif()
