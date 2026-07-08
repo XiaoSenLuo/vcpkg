@@ -8,7 +8,6 @@ vcpkg_from_github(
         0001-fix-dependency.patch
         # MSYS2 repo was used as a source. Thanks MSYS2 team: https://github.com/msys2/MINGW-packages/blob/6e7fba42b7f50e1111b7c0ef50048832243b0ac4/mingw-w64-poco/001-fix-build-on-mingw.patch
         0002-fix-mingw-compilation.patch
-        0003-fix-7zip-dependency.patch
 )
 
 file(REMOVE "${SOURCE_PATH}/Foundation/src/pcre2.h")

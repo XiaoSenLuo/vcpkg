@@ -3,7 +3,7 @@
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Foundation/CMakeLists.txt b/Foundation/CMakeLists.txt
-index 28db69b3a..fbef340d5 100644
+index 5f5a73559..884762320 100644
 --- a/Foundation/CMakeLists.txt
 +++ b/Foundation/CMakeLists.txt
 @@ -220,7 +220,7 @@ if(MINGW)
