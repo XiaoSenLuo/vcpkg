@@ -2,12 +2,13 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO HappySeaFox/sail
     REF "v${VERSION}"
-    SHA512 63ad4ee0cee6d5511e069f2203947c6ae0e9c0b64b3423d1f03f50f059b768d62fe658ae4631c1b7a3fdeb375f26f22ed5439ee30a480c5c3ccf2357a717ac6d
+    SHA512 7a129b275c78aa6edcb00095aabf85aefb6e726f95742dc15c4b2c32d51f0baa71c22c1f50641b2a0dadde111d6d93aff615829d2387aac22b49720a5c971361
     HEAD_REF master
     PATCHES
         fix-always-nanosvg.diff
         fix-heif.patch
         fix-include-directory.patch
+        fix-video-zlib-debug-name.patch
 )
 
 # Enable selected codecs
@@ -33,6 +34,12 @@ if ("openmp" IN_LIST FEATURES)
     set(SAIL_ENABLE_OPENMP ON)
 endif()
 
+if ("video" IN_LIST FEATURES)
+    set(SAIL_MANIP_USE_SWSCALE ON)
+else()
+    set(SAIL_MANIP_USE_SWSCALE OFF)
+endif()
+
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
         test BUILD_TESTING
@@ -54,6 +61,7 @@ vcpkg_cmake_configure(
         ${FEATURE_OPTIONS}
         -DSAIL_COMBINE_CODECS=ON
         -DSAIL_ENABLE_OPENMP=${SAIL_ENABLE_OPENMP}
+        -DSAIL_MANIP_USE_SWSCALE=${SAIL_MANIP_USE_SWSCALE}
         -DSAIL_ONLY_CODECS=${ONLY_CODECS_ESCAPED}
         -DSAIL_BUILD_APPS=OFF
         -DSAIL_BUILD_EXAMPLES=OFF
