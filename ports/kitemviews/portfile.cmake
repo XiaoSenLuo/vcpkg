@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO KDE/kitemviews
     REF "v${VERSION}"
-    SHA512 978b601e704e8d33ecee8ebb90a05b3b7fb7c664a91fc76efff151edd0e6cb3a5c92e301a1f14acfc9fa33dcd4e93b4912b03dc48aad80680ea068e8f2f27ddb
+    SHA512 ded5a82185124d47b91a4ccd85420ef11c477fe705a0dd88287fdbf16376b5311a8a21e7677d2852b90017c8728d2c9956cc6897af0f39c6f720deb99c8f8c68
     HEAD_REF master
 )
 
@@ -21,6 +21,8 @@ vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
         -DBUILD_TESTING=OFF
+        -DCMAKE_DISABLE_FIND_PACKAGE_Qt6Tools=ON
+        -DCMAKE_DISABLE_FIND_PACKAGE_Qt6ToolsTools=ON
         -DKDE_INSTALL_PLUGINDIR=plugins
         -DKDE_INSTALL_QTPLUGINDIR=plugins
         ${FEATURE_OPTIONS}

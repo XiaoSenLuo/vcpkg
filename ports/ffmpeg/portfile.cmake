@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ffmpeg/ffmpeg
     REF "n${VERSION}"
-    SHA512 41aa687cec4e93d0ffde21ea96faa48e4344fda0e9d2c9c71adfb68fedadf03beb274ec712eb1e082bf64fdcee87c55a47bb5c78d5193934be3f3f06e5e792b2
+    SHA512 21bf3fbcdfd2f41ea6edeab40433fecfe362b09ecaa177a652471b54f9357011b4f74dab18245ab1c26f1a473b94205490baecb42289afd2effd603cd0b22b59
     HEAD_REF master
     PATCHES
         0003-fix-windowsinclude.patch
@@ -36,9 +36,9 @@ endif()
 set(OPTIONS "--enable-pic --disable-doc --enable-runtime-cpudetect --disable-autodetect")
 
 if(VCPKG_TARGET_IS_MINGW)
-    if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
+    if(VCPKG_TARGET_ARCHITECTURE STREQUAL "x86" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm")
         string(APPEND OPTIONS " --target-os=mingw32")
-    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
+    elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "x64" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64")
         string(APPEND OPTIONS " --target-os=mingw64")
     endif()
 elseif(VCPKG_TARGET_IS_LINUX)
@@ -512,11 +512,7 @@ else()
     set(WITH_SSH OFF)
 endif()
 
-if("tensorflow" IN_LIST FEATURES)
-    set(OPTIONS "${OPTIONS} --enable-libtensorflow")
-else()
-    set(OPTIONS "${OPTIONS} --disable-libtensorflow")
-endif()
+set(OPTIONS "${OPTIONS} --disable-libtensorflow")
 
 if("tesseract" IN_LIST FEATURES)
     set(OPTIONS "${OPTIONS} --enable-libtesseract")
@@ -558,6 +554,8 @@ endif()
 
 if("vulkan" IN_LIST FEATURES)
     set(OPTIONS "${OPTIONS} --enable-vulkan")
+    # configure probes for a glslc executable to compile Vulkan shaders at build time
+    vcpkg_add_to_path(PREPEND "${CURRENT_HOST_INSTALLED_DIR}/tools/shaderc")
 else()
     set(OPTIONS "${OPTIONS} --disable-vulkan")
 endif()
@@ -695,8 +693,15 @@ if (VCPKG_TARGET_IS_IOS)
         set(simulator "-simulator")
     endif ()
 
-    set(OPTIONS "${OPTIONS} --extra-cflags=--target=${vcpkg_target_arch}-apple-ios${vcpkg_osx_deployment_target}${simulator}")
-    set(OPTIONS "${OPTIONS} --extra-ldflags=--target=${vcpkg_target_arch}-apple-ios${vcpkg_osx_deployment_target}${simulator}")
+    if (VCPKG_OSX_ARCHITECTURES)
+        list(JOIN VCPKG_OSX_ARCHITECTURES " " OSX_ARCHS)
+        list(LENGTH VCPKG_OSX_ARCHITECTURES OSX_ARCH_COUNT)
+        set(OPTIONS "${OPTIONS} --extra-cflags=-mios${simulator}-version-min=${vcpkg_osx_deployment_target}")
+        set(OPTIONS "${OPTIONS} --extra-ldflags=-mios${simulator}-version-min=${vcpkg_osx_deployment_target}")
+    else ()
+        set(OPTIONS "${OPTIONS} --extra-cflags=--target=${vcpkg_target_arch}-apple-ios${vcpkg_osx_deployment_target}${simulator}")
+        set(OPTIONS "${OPTIONS} --extra-ldflags=--target=${vcpkg_target_arch}-apple-ios${vcpkg_osx_deployment_target}${simulator}")
+    endif ()
 
     set(vcpkg_osx_sysroot "${VCPKG_OSX_SYSROOT}")
     # only on x64 for some reason you need to specify the sdk path, otherwise it will try to build with the MacOS sdk
